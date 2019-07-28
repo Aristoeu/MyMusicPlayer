@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="5dp">
+    <TextView
+        android:id="@+id/item_mymusic_postion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="1"
+        android:gravity="center"
+        android:textColor="#0d0c0c"
+        android:textSize="15sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="1"
+        >
+
+        <TextView
+            android:id="@+id/item_mymusic_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="歌曲名"
+            android:textColor="#0d0c0c"
+            android:textSize="15dp"
+            android:singleLine="true"/>
+
+
+        <TextView
+            android:id="@+id/item_mymusic_singer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_mymusic_music"
+            android:text="歌手"
+            android:textColor="#E62B2A2A"
+            android:textSize="12sp"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/item_mymusic_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_mymusic_music"
+            android:layout_marginLeft="15dp"
+            android:textColor="#E62B2A2A"
+            android:layout_toRightOf="@+id/item_mymusic_singer"
+            android:text="时间"
+            android:textSize="12sp"
+            android:maxLines="1"/>
+    </RelativeLayout>
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/settings"
+    android:src="@drawable/list_icn_more"
+    android:layout_marginRight="10dp"/>
+</LinearLayout>

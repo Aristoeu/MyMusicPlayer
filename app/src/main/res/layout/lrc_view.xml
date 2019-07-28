@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.learn.lister.pagerslide.Lrc.LrcView
+        android:id="@+id/lllll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lrcAnimationDuration="1000"
+        app:lrcCurrentTextColor="#fff"
+        app:lrcDividerHeight="24dp"
+        app:lrcLabel="找不到歌词(@_@)"
+        app:lrcNormalTextColor="#C5C5C5"
+        app:lrcPadding="40dp"
+        app:lrcTextSize="18sp"
+        app:lrcNormalTextSize="16sp"
+        app:lrcTimeTextColor="#BDBDBD"
+        app:lrcTimelineColor="#80BDBDBD"
+        app:lrcTimelineTextColor="#FFFFFF"
+        app:lrcTextGravity="left" />
+</LinearLayout>

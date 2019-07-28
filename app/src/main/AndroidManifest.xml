@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.learn.lister.pagerslide">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/NoTitle"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".popupwindows.NewListWindow"
+            android:theme="@style/MyDialogStyleBottom"></activity>
+        <activity android:name=".lists.ChosenMusicActivity" />
+        <activity android:name=".lists.MusicListActivity" />
+        <activity android:name=".detail.DetailActivity" />
+        <activity
+            android:name=".popupwindows.SelectPicPopupWindow"
+            android:theme="@style/MyDialogStyleBottom" />
+
+        <service
+            android:name=".Service.MusicService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".main.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".Widget.MusicWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="main_activity_update_ui" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/jal_music_widget_info" />
+        </receiver>
+    </application>
+
+</manifest>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".lists.MusicListActivity"
+    android:orientation="vertical"
+    android:background="@drawable/background3">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_margin="17dp"
+            android:src="@drawable/actionbar_back"
+            android:id="@+id/back"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="本地歌单"
+            android:textColor="#A9FFFFFF"
+            android:textSize="20dp"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:id="@+id/main_scroll">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/nav_top"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="本地歌曲·幸为华夏人，风华绝前尘"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:textColor="#EDFFFFFF"
+            android:gravity="center_vertical"
+            android:layout_weight="1"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="幸为华夏人，岁月着墨痕。\n幸为华夏人，千年仍传承。…"
+                android:textColor="#94FFFFFF"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+    <com.learn.lister.pagerslide.view.ListViewForScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/local_music_list"
+        android:layout_marginTop="7dp"
+        android:scrollbars="none">
+
+    </com.learn.lister.pagerslide.view.ListViewForScrollView>
+</LinearLayout>
+</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/to_details1"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/background3"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/recommend_icn_start_big" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/to_details"
+            android:layout_marginLeft="20dp"
+            android:text="点击查看正在播放的歌曲"
+            android:textSize="20dp" />
+    </LinearLayout>
+</LinearLayout>
