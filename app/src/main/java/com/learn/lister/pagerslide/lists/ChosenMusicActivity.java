@@ -7,8 +7,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -33,7 +37,12 @@ import com.learn.lister.pagerslide.detail.DetailActivity;
 import com.learn.lister.pagerslide.mine.FragmentFirstMine;
 import com.learn.lister.pagerslide.view.ListViewForScrollView;
 
+import butterknife.BindView;
+
 import static com.learn.lister.pagerslide.data.MyMusic.IndexOfMusicLists;
+import static com.learn.lister.pagerslide.data.MyMusic.LocalMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.OnlineMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.isPlayingFromInternet;
 import static com.learn.lister.pagerslide.data.MyMusic.myMusicLists;
 import static com.learn.lister.pagerslide.data.MyMusic.photosForLists;
 import static com.learn.lister.pagerslide.data.MyMusic.temperateNumberI;
@@ -44,6 +53,8 @@ public class ChosenMusicActivity extends AppCompatActivity implements ChangePhot
     private ImageView photo;
     private TextView title,up_title;
     public static final int CHOOSE_PHOTO = 2;
+    private MyReceiver myReceiver;
+    TextView tv_subtitle;
     private AdapterInterface adapterInterface = new AdapterInterface() {
         @Override
         public void onNewList() {
@@ -56,6 +67,10 @@ public class ChosenMusicActivity extends AppCompatActivity implements ChangePhot
         setContentView(R.layout.activity_chosen_music);
         initView();
         init();
+        myReceiver = new MyReceiver(new Handler());
+        IntentFilter itFilter = new IntentFilter();
+        itFilter.addAction(MusicService.MAIN_UPDATE_UI);
+        getApplicationContext().registerReceiver(myReceiver, itFilter);
 
     }
 
@@ -68,6 +83,7 @@ public class ChosenMusicActivity extends AppCompatActivity implements ChangePhot
         title = findViewById(R.id.list_title);
         up_title = findViewById(R.id.up_title);
         toDetail = findViewById(R.id.toDetail);
+        tv_subtitle = toDetail;
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +192,7 @@ public class ChosenMusicActivity extends AppCompatActivity implements ChangePhot
             mListView.setAdapter(adapter);
             title.setText(myMusicLists.get(IndexOfMusicLists));
             if (IndexOfMusicLists!=0)up_title.setText(myMusicLists.get(IndexOfMusicLists));
-//            photo.setImageBitmap(photosForLists.get(IndexOfMusicLists));
+            photo.setImageBitmap(photosForLists.get(IndexOfMusicLists));
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -203,6 +219,36 @@ public class ChosenMusicActivity extends AppCompatActivity implements ChangePhot
                 }
             });
         }
+    }
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler;
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            // Post the UI updating code to our Handler
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //int play_pause = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_BTN, -1);
+                    int songid = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_TEXT, -1);
+                    switch (isPlayingFromInternet){
+                        case 1:tv_subtitle.setText("正在播放："+OnlineMusicList.get(songid).name);break;
+                        case 0:tv_subtitle.setText("正在播放："+LocalMusicList.get(songid).name);break;
+                        case 2:tv_subtitle.setText("正在播放："+MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name);break;
+                    }
+                }
+            });
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Unbind from the service after exiting
+        //unbindService(conn);
+        getApplicationContext().unregisterReceiver(myReceiver);
     }
 }
 

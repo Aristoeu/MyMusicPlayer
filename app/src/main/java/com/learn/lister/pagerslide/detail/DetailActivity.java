@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.PagerAdapter;
 
+import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -20,7 +21,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
+import com.learn.lister.pagerslide.Lrc.OnSingleTapListener;
 import com.learn.lister.pagerslide.data.MyMusic;
 import com.learn.lister.pagerslide.Lrc.LrcView;
 import com.learn.lister.pagerslide.Lrc.UpdateLrc;
@@ -44,6 +48,7 @@ import java.util.regex.Pattern;
 
 import static com.learn.lister.pagerslide.data.MyMusic.LocalMusicList;
 import static com.learn.lister.pagerslide.data.MyMusic.OnlineMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.downloadingMusic;
 import static com.learn.lister.pagerslide.data.MyMusic.isPlayingFromInternet;
 import static com.learn.lister.pagerslide.data.MyMusic.lrcView;
 import static com.learn.lister.pagerslide.data.MyMusic.myPlayMode;
@@ -72,6 +77,7 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
         }
     };
     private List<View> viewList;//view数组
+    private ObjectAnimator neddleObjectAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +102,35 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
         ViewPager viewPager = findViewById(R.id.viewPager);
         LayoutInflater inflater=getLayoutInflater();
         View view_music_button = inflater.inflate(R.layout.music_button, null);
-        View view_lrc_view = inflater.inflate(R.layout.lrc_view, null);
+        final LrcView lrcView1 = view_music_button.findViewById(R.id.lllll);
+        ImageView needleImage = view_music_button.findViewById(R.id.needle);
+        final RelativeLayout relativeLayout = view_music_button.findViewById(R.id.relative);
+        //final View view_lrc_view = inflater.inflate(R.layout.lrc_view, null);
         viewList = new ArrayList<View>();// 将要分页显示的View装入数组中
         viewList.add(view_music_button);
-        viewList.add(view_lrc_view);
+        //viewList.add(view_lrc_view);
+        neddleObjectAnimator = ObjectAnimator.ofFloat(needleImage, "rotation", 0, 25);
+        needleImage.setPivotX(0);
+        needleImage.setPivotY(0);
+        neddleObjectAnimator.setDuration(800);
+        neddleObjectAnimator.setInterpolator(new LinearInterpolator());
+        //neddleObjectAnimator.start();
+
+        OnSingleTapListener onSingleTapListener1 = new OnSingleTapListener() {
+            @Override
+            public void onTap() {
+                lrcView1.setVisibility(View.INVISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+            }
+        };
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lrcView1.setVisibility(View.VISIBLE);
+                relativeLayout.setVisibility(View.INVISIBLE);
+            }
+        });
+        MyMusic.onSingleTapListener = onSingleTapListener1;
         Aria.download(this).register();
         PagerAdapter pagerAdapter = new PagerAdapter() {
 
@@ -212,20 +243,22 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
                                 .load(OnlineMusicList.get(songid).MusicUrl)
                                 .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/" + OnlineMusicList.get(songid).name + ".mp3")
                                 .start();
-                        Toast.makeText(DetailActivity.this,"开始下载",Toast.LENGTH_SHORT).show();
+                        downloadingMusic = OnlineMusicList.get(songid).name;
+                        Toast.makeText(DetailActivity.this,downloadingMusic + "开始下载",Toast.LENGTH_SHORT).show();
                     break;
                     case 2:if (MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).isOnline)
                     {   Aria.download(this)
-                                .load(OnlineMusicList.get(songid).MusicUrl)
-                                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/" + OnlineMusicList.get(songid).name + ".mp3")
+                                .load(MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).MusicUrl)
+                                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/" + MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name + ".mp3")
                                 .start();
-                        Toast.makeText(DetailActivity.this,"开始下载",Toast.LENGTH_SHORT).show();break;}
+                    downloadingMusic = MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name;
+                        Toast.makeText(DetailActivity.this,downloadingMusic + "开始下载",Toast.LENGTH_SHORT).show();break;}
                     else Toast.makeText(DetailActivity.this,"这是本地歌曲哦，不用下载",Toast.LENGTH_SHORT).show();break;
                 }
 
             }
         });
-        lrcView = view_lrc_view.findViewById(R.id.lllll);
+        lrcView = view_music_button.findViewById(R.id.lllll);
         lrcView.setPlayer(MyMusic.myPlayer);
         lrcView.loadLrc(MyMusic.lrc);
         lrcView.setOnPlayClickListener(new LrcView.OnPlayClickListener() {
@@ -238,6 +271,7 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
                 return true;
             }
         });
+
         UpdateLrc updateLrc = new UpdateLrc();
         updateLrc.updateLrc();
         getUI();
@@ -374,11 +408,13 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
                     switch (play_pause) {
                         case MusicService.VAL_UPDATE_UI_PLAY:
                             play.setImageResource(R.drawable.desk_pause_prs);
+                            neddleObjectAnimator.start();
                             imageView.play();
                             break;
                         case MusicService.VAL_UPDATE_UI_PAUSE:
                             play.setImageResource(R.drawable.desk_play_prs);
                             imageView.pause();
+                            neddleObjectAnimator.reverse();
                             break;
                         default:
                             break;
@@ -396,6 +432,7 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
         intent.putExtras(bundle);
         sendBroadcast(intent);
         updatePlayText();
+        //neddleObjectAnimator.start();
     }
 
     public void next(View view) {
@@ -460,6 +497,8 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
         Toast.makeText(DetailActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
         //在这里处理任务完成的状态
     }
-
+    @Download.onTaskFail void taskFail(DownloadTask task) {
+        Toast.makeText(DetailActivity.this,downloadingMusic + "下载失败，这首歌不支持下载，或者你之前可能已经下载过了",Toast.LENGTH_SHORT).show();
+    }
 
 }

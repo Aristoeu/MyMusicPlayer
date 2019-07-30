@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="My Song" />
+                android:text="" />
         </LinearLayout>
         <ImageView
             android:layout_width="match_parent"
@@ -54,6 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="请选择添加到下面的哪个歌单"
+                android:textSize="25sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:id="@+id/add_to_list"/>

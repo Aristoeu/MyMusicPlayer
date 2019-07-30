@@ -5,7 +5,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 //import android.support.v7.app.NotificationCompat;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -55,6 +59,8 @@ import butterknife.ButterKnife;
 
 import static com.learn.lister.pagerslide.data.MyMusic.ChosenMusicList;
 import static com.learn.lister.pagerslide.data.MyMusic.LocalMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.OnlineMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.isPlayingFromInternet;
 import static com.learn.lister.pagerslide.data.MyMusic.myMusicLists;
 import static com.learn.lister.pagerslide.data.MyMusic.photosForLists;
 import static com.learn.lister.pagerslide.data.MyMusic.temperateNumberI;
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.set) ImageView set;
     @BindView(R.id.search_top) ImageView search_top;
     @BindView(R.id.to_detail)LinearLayout toDetail;
+    @BindView(R.id.tv_subtitle) TextView tv_subtitle;
 
     private int screenWidth;
     private List<BaseFragment> mFragmentList = new ArrayList<>();
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private  String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    private MyReceiver myReceiver;
     public  void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
@@ -98,6 +106,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myMusicLists.add("我的收藏");
         totalList.add(ChosenMusicList);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.topinfo_ban_bg);
+        myReceiver = new MyReceiver(new Handler());
+        IntentFilter itFilter = new IntentFilter();
+        itFilter.addAction(MusicService.MAIN_UPDATE_UI);
+        getApplicationContext().registerReceiver(myReceiver, itFilter);
         photosForLists.add(bitmap);
         ButterKnife.bind(this);
         LocalMusicList = MusicList.getMusicData(this);
@@ -183,6 +195,30 @@ public void save(){
     //editor.putString("data",json);
     //editor.apply();
 }
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler;
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            // Post the UI updating code to our Handler
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //int play_pause = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_BTN, -1);
+                    int songid = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_TEXT, -1);
+                    switch (isPlayingFromInternet){
+                        case 1:tv_subtitle.setText("正在播放："+OnlineMusicList.get(songid).name);break;
+                        case 0:tv_subtitle.setText("正在播放："+LocalMusicList.get(songid).name);break;
+                        case 2:tv_subtitle.setText("正在播放："+MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name);break;
+                    }
+                }
+            });
+        }
+    }
+
     private void setListener() {
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -294,6 +330,12 @@ public void save(){
                 break;
         }
     }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //Unbind from the service after exiting
+        //unbindService(conn);
+        getApplicationContext().unregisterReceiver(myReceiver);
+    }
 }
 

@@ -57,7 +57,7 @@ public class MusicButton extends AppCompatImageView {
             state = STATE_STOP;
             //Add a rotation animation, the rotation center defaults to the midpoint of the control
             objectAnimator = ObjectAnimator.ofFloat(this, "rotation", 0f, 360f);
-            objectAnimator.setDuration(3000);//Set animation time
+            objectAnimator.setDuration(12000);//Set animation time
             objectAnimator.setInterpolator(new LinearInterpolator());//Animation time linear gradient
             objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
             objectAnimator.setRepeatMode(ObjectAnimator.RESTART);

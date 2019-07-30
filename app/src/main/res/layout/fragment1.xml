@@ -81,6 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="20dp"
+            android:layout_weight="0.5"
+            android:gravity="right"
             android:text="+"
             android:textSize="30dp" />
     </LinearLayout>
@@ -89,7 +91,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/local_music_layout">
 
         <ImageView
             android:id="@+id/local_music_icn"
@@ -149,7 +152,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/test_layout">
 
         <ImageView
             android:id="@+id/default_love_list"

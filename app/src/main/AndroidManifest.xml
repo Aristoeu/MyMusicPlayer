@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+
+    <permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
         android:allowBackup="true"
@@ -17,8 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/NoTitle"
         android:usesCleartextTraffic="true">
-        <activity android:name=".popupwindows.NewListWindow"
-            android:theme="@style/MyDialogStyleBottom"></activity>
+        <activity android:name=".download.DownloadActivity"></activity>
+        <activity
+            android:name=".popupwindows.NewListWindow"
+            android:theme="@style/MyDialogStyleBottom" />
         <activity android:name=".lists.ChosenMusicActivity" />
         <activity android:name=".lists.MusicListActivity" />
         <activity android:name=".detail.DetailActivity" />

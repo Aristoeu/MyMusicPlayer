@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 
 import com.learn.lister.pagerslide.Lrc.LrcView;
+import com.learn.lister.pagerslide.Lrc.OnSingleTapListener;
 import com.learn.lister.pagerslide.utils.Music;
 
 import java.util.ArrayList;
@@ -26,5 +27,7 @@ public class MyMusic {
     public static int temperateNumberI = -1;
     public static int i = 1;
     public static boolean fistClick = true;
+    public static OnSingleTapListener onSingleTapListener;
+    public static String downloadingMusic;
     public static String lrc = "[00:00.000] 没找到歌词\n" ;
 }

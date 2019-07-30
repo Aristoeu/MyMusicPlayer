@@ -43,6 +43,7 @@ import static com.learn.lister.pagerslide.data.MyMusic.temperateNumberI;
 public class MusicService extends Service {
     public static MediaPlayer mlastPlayer;
     public static int mPosition;
+    private int mlastPositon;
     private int position;
     private String path = "";
     private String url = "";
@@ -85,9 +86,15 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         initNotificationBar();
         Bundle bundle = intent.getExtras();
+        //mlastPositon = position;
         position = bundle.getInt("position");
         //prepare();
-        if (mlastPlayer == null/*|| mPosition != position*/ ){
+
+
+        // need to be fixed
+
+
+        if (mlastPlayer == null|| mlastPositon != position){
             prepare();
         }else{
             player = mlastPlayer;
@@ -208,6 +215,7 @@ public class MusicService extends Service {
                 }
                 mlastPlayer = myPlayer;
                 mPosition = position;
+                mlastPositon = position;
                 myPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 try {
                     Log.i(TAG,path);
@@ -249,6 +257,7 @@ public class MusicService extends Service {
                 }
                 mlastPlayer = myPlayer;
                 mPosition = position;
+                mlastPositon = position;
                 myPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 try {
                     //Log.i(TAG,path);
@@ -293,6 +302,7 @@ public class MusicService extends Service {
                     }
                     mlastPlayer = myPlayer;
                     mPosition = position;
+                    mlastPositon = position;
                     myPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     try {
                         //Log.i(TAG,path);
@@ -333,6 +343,7 @@ public class MusicService extends Service {
                     }
                     mlastPlayer = myPlayer;
                     mPosition = position;
+                    mlastPositon = position;
                     myPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     try {
                         Log.i(TAG,path);

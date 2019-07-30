@@ -24,6 +24,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
 import com.learn.lister.pagerslide.R;
+import com.learn.lister.pagerslide.data.MyMusic;
 
 import java.io.File;
 import java.io.IOException;
@@ -508,6 +509,7 @@ public class LrcView extends View {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
+
             if (hasLrc() && isShowTimeline && mPlayDrawable.getBounds().contains((int) e.getX(), (int) e.getY())) {
                 int centerLine = getCenterLine();
                 long centerLineTime = mLrcEntryList.get(centerLine).getTime();
@@ -519,9 +521,10 @@ public class LrcView extends View {
                     invalidate();
                     return true;
                 }
-            }
+            }MyMusic.onSingleTapListener.onTap();
             return super.onSingleTapConfirmed(e);
         }
+
     };
 
     private Runnable hideTimelineRunnable = new Runnable() {

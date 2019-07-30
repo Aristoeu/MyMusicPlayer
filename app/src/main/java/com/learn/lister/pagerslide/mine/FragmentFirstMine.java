@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +48,7 @@ import static com.learn.lister.pagerslide.data.MyMusic.totalList;
 public class FragmentFirstMine extends BaseFragment implements UpdateContract.UpdateView {
     private TextView textView,loveMusic,addPlus;
     private ImageView imageView,default_photo,imageView1,imageView2,imageView3,imageView4,imageView5;
-    private LinearLayout mContainer;
+    private LinearLayout mContainer,test_layout,local_music_layout;
     public static final String INTENT_BROADCAST = "android.intent.action.MEDICAL_BROADCAST";
     public static final String CHANGE_PHOTO_BROADCAST = "android.intent.action.CHANGE_PHOTO";
     public static final int CLOSE_SEARCH_MSG=1;
@@ -86,6 +88,8 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
         addPlus = view.findViewById(R.id.add_plus);
         mContainer = view.findViewById(R.id.mContainer);
         default_photo = view.findViewById(R.id.default_love_list);
+        test_layout = view.findViewById(R.id.test_layout);
+        local_music_layout = view.findViewById(R.id.local_music_layout);
         return view;
 
     }
@@ -94,8 +98,10 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
             view = View.inflate(getContext(), R.layout.like_list, null);
             TextView textView = view.findViewById(R.id.loveMusic);
             textView.setText(MyMusic.myMusicLists.get(m));
-
-            textView.setOnClickListener(new View.OnClickListener() {
+            LinearLayout layout = view.findViewById(R.id.layout);
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.topinfo_ban_bg);
+            photosForLists.add(bitmap);
+            layout.setOnClickListener(new View.OnClickListener() {
                 int m = i;
                 @Override
                 public void onClick(View view) {
@@ -158,15 +164,15 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
         super.onActivityCreated(savedInstanceState);
         updatePresenter.read(getActivity(),onUpdateListener);
         //read();
-        textView.setOnClickListener(new View.OnClickListener() {
+        /*textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), MusicListActivity.class);
                 startActivity(intent);
             }
-        });
-        loveMusic.setOnClickListener(new View.OnClickListener() {
+        });*/
+        test_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!MyMusic.ChosenMusicList.isEmpty())
@@ -184,6 +190,15 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), NewListWindow.class));
+            }
+        });
+        local_music_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getContext(),"click",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), MusicListActivity.class);
+                startActivity(intent);
             }
         });
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getActivity());

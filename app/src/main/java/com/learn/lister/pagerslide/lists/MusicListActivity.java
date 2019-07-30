@@ -5,10 +5,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -25,7 +29,11 @@ import com.learn.lister.pagerslide.popupwindows.SelectPicPopupWindow;
 import com.learn.lister.pagerslide.utils.MusicList;
 import com.learn.lister.pagerslide.view.ListViewForScrollView;
 
+import butterknife.BindView;
+
 import static com.learn.lister.pagerslide.data.MyMusic.LocalMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.OnlineMusicList;
+import static com.learn.lister.pagerslide.data.MyMusic.isPlayingFromInternet;
 import static com.learn.lister.pagerslide.data.MyMusic.temperateNumberI;
 
 public class MusicListActivity extends AppCompatActivity {
@@ -42,6 +50,9 @@ public class MusicListActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+    private MyReceiver myReceiver;
+    TextView tv_subtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +61,11 @@ public class MusicListActivity extends AppCompatActivity {
         sv.smoothScrollTo(0, 0);
         mListView = findViewById(R.id.local_music_list);
         toDetails = findViewById(R.id.to_details);
+        tv_subtitle = toDetails;
+        myReceiver = new MyReceiver(new Handler());
+        IntentFilter itFilter = new IntentFilter();
+        itFilter.addAction(MusicService.MAIN_UPDATE_UI);
+        getApplicationContext().registerReceiver(myReceiver, itFilter);
         back = findViewById(R.id.back);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 2);
@@ -101,4 +117,28 @@ public class MusicListActivity extends AppCompatActivity {
             }
         });
     }
+    public class MyReceiver extends BroadcastReceiver {
+        private final Handler handler;
+        public MyReceiver(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            // Post the UI updating code to our Handler
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //int play_pause = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_BTN, -1);
+                    int songid = intent.getIntExtra(MusicService.KEY_MAIN_ACTIVITY_UI_TEXT, -1);
+                    switch (isPlayingFromInternet){
+                        case 1:tv_subtitle.setText("正在播放："+OnlineMusicList.get(songid).name);break;
+                        case 0:tv_subtitle.setText("正在播放："+LocalMusicList.get(songid).name);break;
+                        case 2:tv_subtitle.setText("正在播放："+MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name);break;
+                    }
+                }
+            });
+        }
+    }
+
 }
