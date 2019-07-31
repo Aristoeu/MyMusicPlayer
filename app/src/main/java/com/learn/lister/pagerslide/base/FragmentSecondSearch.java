@@ -41,6 +41,7 @@ public class FragmentSecondSearch extends BaseFragment {
     private List<View> viewList;//view数组
     private ListView listView;
     private List<Music> listM;
+    private Boolean isNormalClick = true;
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -99,10 +100,15 @@ public class FragmentSecondSearch extends BaseFragment {
             mHandler.sendMessage(message);
             Looper.prepare();
             Toast.makeText(getContext(),"sent",Toast.LENGTH_SHORT).show();
-            Looper.loop();}
+                isNormalClick = true;
+            Looper.loop();
+               }
             else {Looper.prepare();
                 Toast.makeText(getContext(),"没有找到哦，换个词试试吧！",Toast.LENGTH_SHORT).show();
-                Looper.loop();}
+                isNormalClick = false;
+                Looper.loop();
+
+            }
         }
 
         @Override
@@ -139,18 +145,25 @@ public class FragmentSecondSearch extends BaseFragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MyMusic.fistClick) {
+              if (MyMusic.fistClick) {
                     listM = new ArrayList<>();
                     MyMusic.OnlineMusicList = listM;
                     upload.upload(editText.getText().toString(), onMusicListener, "15");
                     MyMusic.fistClick = false;
                 } else{
-                    if (MyMusic.OnlineMusicList.size() == 15) {
-                    if (MyMusic.OnlineMusicList.get(14).MusicUrl!=null){
+                    if (!isNormalClick){
                         listM = new ArrayList<>();
                         MyMusic.OnlineMusicList = listM;
                         upload.upload(editText.getText().toString(), onMusicListener, "15");
-                    } }else Toast.makeText(getContext(), "点太快了，等一下再点", Toast.LENGTH_SHORT).show();
+                    }
+                    if (isNormalClick){
+                        if (MyMusic.OnlineMusicList.size() == 15) {
+                            if (MyMusic.OnlineMusicList.get(14).MusicUrl!=null){
+                        listM = new ArrayList<>();
+                        MyMusic.OnlineMusicList = listM;
+                        upload.upload(editText.getText().toString(), onMusicListener, "15");
+                    }
+                    }else Toast.makeText(getContext(), "点太快了，等一下再点", Toast.LENGTH_SHORT).show();}
                 }
             }
         });

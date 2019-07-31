@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -35,6 +37,7 @@ import com.learn.lister.pagerslide.Lrc.OnSingleTapListener;
 import com.learn.lister.pagerslide.data.MyMusic;
 import com.learn.lister.pagerslide.Lrc.LrcView;
 import com.learn.lister.pagerslide.Lrc.UpdateLrc;
+import com.learn.lister.pagerslide.mine.OnUpdateListener;
 import com.learn.lister.pagerslide.upload.OnMusicListener;
 import com.learn.lister.pagerslide.upload.Upload;
 import com.learn.lister.pagerslide.R;
@@ -45,6 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import jp.wasabeef.blurry.Blurry;
 
 import static com.learn.lister.pagerslide.data.MyMusic.LocalMusicList;
 import static com.learn.lister.pagerslide.data.MyMusic.OnlineMusicList;
@@ -78,7 +83,29 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
     };
     private List<View> viewList;//view数组
     private ObjectAnimator neddleObjectAnimator;
-
+    public static ImageView view_to_be_blurred;
+    private OnUpdateListener onUpdateListener = new OnUpdateListener() {
+        @Override
+        public void onSuccess() {
+            Message msg = new Message();
+            mHandler.sendMessage(msg);
+        }
+    };
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            //操作界面
+            if (MyMusic.mBitmap!=null)
+                //view_to_be_blurred.setImageBitmap(MyMusic.mBitmap);
+            Blurry.with(getApplication())
+                    .radius(100)
+                    .color(Color.argb(130,0,0,0))
+                    .async()
+                    .from(MyMusic.mBitmap)
+                    .into(view_to_be_blurred);
+            super.handleMessage(msg);
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +121,9 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
         itFilter.addAction(MusicService.MAIN_UPDATE_UI);
         getApplicationContext().registerReceiver(myReceiver, itFilter);
         songid = getIntent().getIntExtra("position",0);
+        view_to_be_blurred = findViewById(R.id.view_to_be_blurred);
         initView();
+
     }
 
     public void initView() {
@@ -128,6 +157,13 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
             public void onClick(View view) {
                 lrcView1.setVisibility(View.VISIBLE);
                 relativeLayout.setVisibility(View.INVISIBLE);
+            }
+        });
+        lrcView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lrcView1.setVisibility(View.INVISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
             }
         });
         MyMusic.onSingleTapListener = onSingleTapListener1;
@@ -284,12 +320,12 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
                 upload.upload(LocalMusicList.get(songid).name, onMusicListener, "1");
                 break;
             case 1:
-                imageView.setImageURL(OnlineMusicList.get(songid).picUrl);
+                imageView.setImageURL(OnlineMusicList.get(songid).picUrl,onUpdateListener);
                 lrcView.loadLrcByUrl(OnlineMusicList.get(songid).MusicId);
                 break;
             case 2:
                 if (MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).isOnline) {
-                    imageView.setImageURL(MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).picUrl);
+                    imageView.setImageURL(MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).picUrl,onUpdateListener);
                     lrcView.loadLrcByUrl(MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).MusicId);
                 } else
                     upload.upload(MyMusic.totalList.get(MyMusic.IndexOfMusicLists).get(songid).name, onMusicListener, "1");
@@ -316,7 +352,7 @@ public class DetailActivity extends AppCompatActivity implements ControlContract
                         Matcher matcher2 = pattern2.matcher(str);
                         Matcher matcher = pattern.matcher(str);
                         while (matcher.find()) {
-                            imageView.setImageURL(matcher.group(1));
+                            imageView.setImageURL(matcher.group(1),onUpdateListener);
                         }
                         while (matcher2.find()){
                             // Log.d("<<<>>><<<>>>", matcher2.group(1));

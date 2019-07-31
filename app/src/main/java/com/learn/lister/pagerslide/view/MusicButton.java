@@ -19,6 +19,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.learn.lister.pagerslide.data.MyMusic;
+import com.learn.lister.pagerslide.detail.DetailActivity;
+import com.learn.lister.pagerslide.mine.OnUpdateListener;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -113,7 +117,7 @@ public class MusicButton extends AppCompatImageView {
 
 
     //设置网络图片
-    public void setImageURL(final String path) {
+    public void setImageURL(final String path, final OnUpdateListener onUpdateListener) {
         //开启一个线程用于联网
         new Thread() {
             @Override
@@ -132,7 +136,9 @@ public class MusicButton extends AppCompatImageView {
                     if (code == 200) {
                         InputStream inputStream = connection.getInputStream();
                         //使用工厂把网络的输入流生产Bitmap
-                        Bitmap bitmap =toRoundBitmap(getNewBitmap( BitmapFactory.decodeStream(inputStream),600,600));
+                        MyMusic.mBitmap = getNewBitmap( BitmapFactory.decodeStream(inputStream),600,600);
+                        Bitmap bitmap =toRoundBitmap(MyMusic.mBitmap);
+                        onUpdateListener.onSuccess();
                         //利用Message把图片发给Handler
                         Message msg = Message.obtain();
                         msg.obj = bitmap;

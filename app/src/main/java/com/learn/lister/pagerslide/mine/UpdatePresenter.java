@@ -20,7 +20,7 @@ import static com.learn.lister.pagerslide.data.MyMusic.i;
 import static com.learn.lister.pagerslide.data.MyMusic.myMusicLists;
 import static com.learn.lister.pagerslide.data.MyMusic.totalList;
 
-public class UpdatePresenter implements UpdateContract.UpdatePresenter{
+public class UpdatePresenter implements UpdateContract.UpdatePresenter {
     public void save(FragmentActivity activity) {
         Gson gson = new Gson();
         String songList = gson.toJson(totalList);
@@ -61,5 +61,6 @@ public class UpdatePresenter implements UpdateContract.UpdatePresenter{
             }
         }MyMusic.totalNumberOfList = totalList.size()-1;
         Log.d("<<<>>>","fromjson");
+       // Log.d("<<<>>>",totalList.get(1).get(1).MusicUrl);
     }
 }

@@ -1,5 +1,5 @@
 package com.learn.lister.pagerslide.utils;
-public class Music {
+public class Music extends org.litepal.crud.DataSupport{
     public String singer;//歌手
     public String name;//歌曲名
     public String path;//本地歌曲的地址

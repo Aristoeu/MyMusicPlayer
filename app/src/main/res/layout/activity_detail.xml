@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".detail.DetailActivity"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/background_layout">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_to_be_blurred"
+        android:src="@drawable/background3"
+        android:scaleType="fitXY"/>
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".detail.DetailActivity"
-    android:orientation="vertical"
-    android:background="@drawable/background3">
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -97,6 +107,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:maxLines="1"
+            android:textColor="@color/white"
             android:textSize="10dp"/>
 
         <SeekBar
@@ -112,6 +123,7 @@
             android:text="total time"
             android:layout_gravity="center_vertical"
             android:textSize="10dp"
+            android:textColor="@color/white"
             android:layout_marginRight="20dp"
             android:maxLines="1"/>
     </LinearLayout>
@@ -168,3 +180,4 @@
             android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>
+</RelativeLayout>

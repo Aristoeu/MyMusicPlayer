@@ -30,4 +30,5 @@ public class MyMusic {
     public static OnSingleTapListener onSingleTapListener;
     public static String downloadingMusic;
     public static String lrc = "[00:00.000] 没找到歌词\n" ;
+    public static Bitmap mBitmap;
 }

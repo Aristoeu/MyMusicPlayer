@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -30,6 +31,9 @@ import com.learn.lister.pagerslide.lists.ChosenMusicActivity;
 import com.learn.lister.pagerslide.lists.MusicListActivity;
 import com.learn.lister.pagerslide.popupwindows.NewListWindow;
 import com.learn.lister.pagerslide.utils.Music;
+
+import org.litepal.crud.DataSupport;
+import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +74,8 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
             updateUI(i);
         }
     };
+    private SQLiteDatabase db;
+    private List<Music> list;
 
     View view;
     @Override
@@ -156,6 +162,7 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
     public void onDestroy() {
         updatePresenter.save(getActivity());
         // save();
+
         super.onDestroy();
     }
     @Override
@@ -172,6 +179,8 @@ public class FragmentFirstMine extends BaseFragment implements UpdateContract.Up
                 startActivity(intent);
             }
         });*/
+        //db = Connector.getDatabase();
+        //DataSupport.saveAll(ChosenMusicList);
         test_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
